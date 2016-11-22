@@ -11,7 +11,8 @@
     "watson-developer-cloud": "*",
     "connect-busboy": "*",
     "fs": "*",
-    "tmp": "*"
+    "tmp": "*",
+    "extend": "*"
   },
   "engines": {
     "node": "4.0.0"
