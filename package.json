@@ -9,10 +9,9 @@
   "dependencies": {
     "express": "*",
     "watson-developer-cloud": "*",
-    "connect-busboy": "*",
-    "fs": "*",
-    "tmp": "*",
-    "extend": "*"
+    "extend": "*",
+    "multer": "*",
+    "streamifier": "*"
   },
   "engines": {
     "node": "4.0.0"

@@ -1,56 +1,45 @@
-var watson = require('watson-developer-cloud');
-var busboy = require('connect-busboy');
-var fs = require('fs');
-var tmp = require('tmp');
 var extend = require('extend');
+var watson = require('watson-developer-cloud');
 var express = require('express');
+var multer = require('multer');
+var streamifier = require('streamifier');
+var upload = multer();
 var app = express();
-app.use(busboy());
+app.use(express.static('public'));
 
-var credentials = {
-    username: process.env.STT_USERNAME || 'mayVcYoNH5rg',
-    password: process.env.STT_PASSWORD || 'fe53fa7c-201d-46c9-a7ef-149e7deba87f'
-};
-
-var tts = watson.text_to_speech(extend(credentials, {
+var tts = watson.text_to_speech({
+    url: 'https://stream.watsonplatform.net/text-to-speech/api',
     version: 'v1',
-    url: 'https://stream.watsonplatform.net/text-to-speech/api'
-}));
+    username: process.env.TTS_USERNAME || 'fe53fa7c-201d-46c9-a7ef-149e7deba87f',
+    password: process.env.TTS_PASSWORD || 'mayVcYoNH5rg'
+});
 
-app.get('/speak', function (req, res) {
-    var text = req.query.text;
-    var transcript = tts.synthesize({
-        text: text,
-        voice: 'en-US_AllisonVoice', // Optional voice
-        accept: 'audio/wav' // default is audio/ogg; codec=opus
-    });
+app.get('/speak', function (req, res, next) {
+    var params = {
+        voice: 'en-US_AllisonVoice',
+        accept: 'audio/wav'
+    };
+    var transcript = tts.synthesize(extend(params, req.query));
+    transcript.on('error', function(error) { next(error); });
     transcript.pipe(res);
 });
 
-/*
-var stt = watson.speech_to_text(extend(credentials, {
+var stt = watson.speech_to_text({
+    url: 'https://stream.watsonplatform.net/speech-to-text/api',
     version: 'v1',
-    url: 'https://stream.watsonplatform.net/speech-to-text/api'
-}));
-
-app.post('/write', function (req, res) {
-    req.pipe(req.busboy);
-
-    req.busboy.on('file', function (fieldname, file, filename) {
-        console.log('processing file ' + filename); 
-        tmp.file(function(err, path, fd, cleanupCallback) {
-            var fstream = fs.createWriteStream(path);
-            file.pipe(fstream);
-            console.log('wrote to temp file ' + path); 
-        });
-    });
-    res.status(200);
-    res.send('done');
+    username: process.env.STT_USERNAME || '1514b5fa-6d86-4d7a-b6b2-d546fdd9a751',
+    password: process.env.STT_PASSWORD || 'Av0bjH46apYL'
 });
-*/
+
+app.get('/listen', function(req, res, next) { res.redirect('/listen.html'); });
+
+app.post('/listen', upload.single('recording'), function (req, res, next) {
+    var transcript = stt.createRecognizeStream({ content_type: 'audio/wav' });
+    transcript.setEncoding('utf8');
+    transcript.on('error', function(error) { next(error); });
+    streamifier.createReadStream(req.file.buffer).pipe(transcript);
+    transcript.pipe(res);
+});
 
 var port = process.env.VCAP_APP_PORT || process.env.PORT || 3000;
-
-app.listen(port, function () {
-  console.log('listening on port ' + port);
-});
+app.listen(port, function () { console.log('listening on port ' + port); });
