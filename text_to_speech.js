@@ -31,7 +31,7 @@ var stt = watson.speech_to_text({
     password: process.env.STT_PASSWORD || 'Av0bjH46apYL'
 });
 
-app.get('/listen', function(req, res, next) { res.redirect('/listen.html'); });
+app.get('/', function(req, res, next) { res.redirect('/listen.html'); });
 
 app.post('/listen', upload.single('recording'), function (req, res, next) {
     var transcript = stt.createRecognizeStream({ content_type: 'audio/wav' });
