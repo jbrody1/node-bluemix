@@ -7,8 +7,11 @@
     "start": "node text_to_speech.js"
   },
   "dependencies": {
-    "express": "^4.13.3",
-    "watson-developer-cloud": "^2.9.0"
+    "express": "*",
+    "watson-developer-cloud": "*",
+    "connect-busboy": "*",
+    "fs": "*",
+    "tmp": "*"
   },
   "engines": {
     "node": "4.0.0"
