@@ -1,0 +1,27 @@
+{
+  "name": "node-bluemix",
+  "version": "0.0.1",
+  "description": "Text to speech using Watson API",
+  "main": "text_to_speech.js",
+  "scripts": {
+    "start": "node text_to_speech.js"
+  },
+  "dependencies": {
+    "express": "^4.13.3",
+    "watson-developer-cloud": "^2.9.0"
+  },
+  "engines": {
+    "node": "4.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jbrody1/node-bluemix"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "watson"
+  ],
+  "author": "John Brody",
+  "license": "MIT"
+}

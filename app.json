@@ -1,0 +1,6 @@
+{
+  "name": "node-bluemix",
+  "description": "Text to speech using Watson API",
+  "repository": "https://github.com/jbrody1/node-bluemix",
+  "keywords": ["node", "express", "watson"]
+}
